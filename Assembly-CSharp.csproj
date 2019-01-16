@@ -53,7 +53,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\GunFire.cs" />
+     <Compile Include="Assets\_scripts\GunFire.cs" />
+     <Compile Include="Assets\_scripts\WallScript.cs" />
+     <Compile Include="Assets\_scripts\WeaponProps.cs" />
+     <Compile Include="Assets\Easy FPS\Scripts\BulletScript.cs" />
+     <Compile Include="Assets\Easy FPS\Scripts\DestroyAfterTimeParticle.cs" />
+     <Compile Include="Assets\Easy FPS\Scripts\GunInventory.cs" />
+     <Compile Include="Assets\Easy FPS\Scripts\GunScript.cs" />
+     <Compile Include="Assets\Easy FPS\Scripts\MouseLookScript.cs" />
+     <Compile Include="Assets\Easy FPS\Scripts\PlayerMovementScript.cs" />
+     <Compile Include="Assets\Nokobot\ModernGuns_Handgun\Demo Assets\SimpleShoot.cs" />
      <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />
      <Compile Include="Assets\SampleScenes\Menu\Scripts\PauseMenu.cs" />
      <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />
@@ -62,8 +71,6 @@
      <Compile Include="Assets\SampleScenes\Scripts\ParticleSceneControls.cs" />
      <Compile Include="Assets\SampleScenes\Scripts\PlaceTargetWithMouse.cs" />
      <Compile Include="Assets\SampleScenes\Scripts\SlowMoButton.cs" />
-     <Compile Include="Assets\WallScript.cs" />
-     <Compile Include="Assets\WeaponProps.cs" />
      <None Include="Assets\3D Models\Props\Weapons\Ammunition\ReadMe.txt" />
      <None Include="Assets\Laptop\StandardColorMask.shader" />
      <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />
