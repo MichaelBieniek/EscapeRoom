@@ -6,7 +6,6 @@ public class WeaponProps : MonoBehaviour
 {
     [SerializeField] public int MagCapacity;
     [SerializeField] public float FireRate;
-    [SerializeField] public GameObject MuzzleFlash;
     [SerializeField] public AudioSource GunshotSfx;
     [SerializeField] public AudioSource GunClickSfx;
     [SerializeField] public AudioSource ReloadSfx;
@@ -15,4 +14,5 @@ public class WeaponProps : MonoBehaviour
     [SerializeField] public GameObject BulletPrefab;
     [SerializeField] public GameObject CasingPrefab;
     [SerializeField] public Transform CaseExitLocation;
+    [SerializeField] public GameObject[] MuzzleFlash;
 }

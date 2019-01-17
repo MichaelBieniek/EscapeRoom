@@ -24,13 +24,11 @@ public class GunFire : MonoBehaviour
     float cooldown = 0f;
     float _actionTimer = 0f;
     // Start is called before the first frame update
-
-    WeaponProps _wp;
     Animator _gunAnim;
-    AudioSource _gunshotSfx;
-    AudioSource _gunClickSfx;
-    AudioSource _reloadSfx;
-    GameObject _muzzleFlash;
+    AudioSource gunshotSfx;
+    AudioSource gunClickSfx;
+    AudioSource reloadSfx;
+    GameObject[] flashes;
     Transform _bulletOriginPoint;
     GameObject _bulletPrefab;
     GameObject _casingPrefab;
@@ -41,19 +39,18 @@ public class GunFire : MonoBehaviour
     int ammo;
     void Start()
     {
-        _wp = weapon.GetComponent<WeaponProps>();
-        _fireRate = _wp.FireRate;
-        _magCapacity = _wp.MagCapacity;
-        _gunshotSfx = _wp.GunshotSfx;
-        _gunClickSfx = _wp.GunClickSfx;
-        _reloadSfx = _wp.ReloadSfx;
-        _gunAnim = _wp.GunAnim;
-        _muzzleFlash = _wp.MuzzleFlash;
-        _bulletOriginPoint = _wp.BulletOriginPoint;
-        _bulletPrefab = _wp.BulletPrefab;
-        _casingPrefab = _wp.CasingPrefab;
-        _casingExitLocation = _wp.CaseExitLocation;
-
+        WeaponProps wp = weapon.GetComponent<WeaponProps>();
+        _fireRate = wp.FireRate;
+        _magCapacity = wp.MagCapacity;
+        gunshotSfx = wp.GunshotSfx;
+        gunClickSfx = wp.GunClickSfx;
+        reloadSfx = wp.ReloadSfx;
+        _gunAnim = wp.GunAnim;
+        _bulletOriginPoint = wp.BulletOriginPoint;
+        _bulletPrefab = wp.BulletPrefab;
+        _casingPrefab = wp.CasingPrefab;
+        _casingExitLocation = wp.CaseExitLocation;
+        flashes = wp.MuzzleFlash;
         // calculated
         _fireRateNorm = 1/(_fireRate/60f);
         ammo = _magCapacity;
@@ -69,6 +66,8 @@ public class GunFire : MonoBehaviour
             _isFiring = true;                
             Fire();
             _isFiring = false;
+        } else if (Input.GetKeyDown("r")) {
+            Reload();
         }
     }
 
@@ -82,27 +81,25 @@ public class GunFire : MonoBehaviour
         }
         cooldown = _fireRateNorm;
         if (ammo <= 0)
-        {           
+        {        
+            gunClickSfx.Play();   
             // do nothing
             return;
         }
         ammo--;
+        _gunAnim.SetInteger("ammo", ammo);
         
         // play animation & sfx
         CasingRelease();
+                
+        MuzzleFlash();       
         
-        if(_muzzleFlash != null) {
-            MuzzleFlash();
-        } else {
-            Debug.Log("No muzzleflash PS or bad type");
-        }
-        
-        if(_gunshotSfx != null) {
-            _gunshotSfx.Play();
+        if(gunshotSfx != null) {
+            gunshotSfx.Play();
         }
        
         _gunAnim.SetTrigger("shoot");  
-        if(ammo <= 1) {
+        if(ammo == 0) {
             _gunAnim.SetBool("empty", true);
         }       
 
@@ -116,9 +113,14 @@ public class GunFire : MonoBehaviour
     }
 
     void MuzzleFlash() {
+        if(flashes == null) {
+            Debug.Log("No flash prefabs");
+            return;
+        }
+        int randomNumberForMuzzelFlash = Random.Range(0,5);
         GameObject tempFlash;
         Instantiate(_bulletPrefab, _bulletOriginPoint.transform.position, _bulletOriginPoint.transform.rotation).GetComponent<Rigidbody>().AddForce(_bulletOriginPoint.forward * 1000f);
-        tempFlash = Instantiate(_muzzleFlash, _bulletOriginPoint.transform.position, _bulletOriginPoint.transform.rotation);
+        tempFlash = Instantiate(flashes[randomNumberForMuzzelFlash], _bulletOriginPoint.transform.position, _bulletOriginPoint.transform.rotation);
     }
     void CasingRelease()
     {
@@ -127,4 +129,19 @@ public class GunFire : MonoBehaviour
         casing.GetComponent<Rigidbody>().AddExplosionForce(550f, (_casingExitLocation.position - _casingExitLocation.right * 0.3f - _casingExitLocation.up * 0.6f), 1f);
         casing.GetComponent<Rigidbody>().AddTorque(new Vector3(0, Random.Range(100f, 500f), Random.Range(10f, 1000f)), ForceMode.Impulse);
     }
+
+    void Reload() {
+        StartCoroutine("ReloadDelay");
+        
+         
+    }
+
+    IEnumerator ReloadDelay(){
+        _gunAnim.SetTrigger("reload"); 
+        reloadSfx.Play();
+		yield return new WaitForSeconds (1f);
+		ammo = _magCapacity;
+        _gunAnim.SetInteger("ammo", ammo);
+        _gunAnim.SetBool("empty", false);
+	}
 }
